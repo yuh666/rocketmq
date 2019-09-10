@@ -69,17 +69,19 @@ public class RemotingCommand {
         }
     }
 
+    //指令code
     private int code;
     private LanguageCode language = LanguageCode.JAVA;
     private int version = 0;
     private int opaque = requestId.getAndIncrement();
+    //type
     private int flag = 0;
     private String remark;
     private HashMap<String, String> extFields;
     private transient CommandCustomHeader customHeader;
 
     private SerializeType serializeTypeCurrentRPC = serializeTypeConfigInThisServer;
-
+    //消息体
     private transient byte[] body;
 
     protected RemotingCommand() {
@@ -243,7 +245,6 @@ public class RemotingCommand {
         }
 
         if (this.extFields != null) {
-
             Field[] fields = getClazzFields(classHeader);
             for (Field field : fields) {
                 if (!Modifier.isStatic(field.getModifiers())) {
@@ -415,12 +416,15 @@ public class RemotingCommand {
 
         ByteBuffer result = ByteBuffer.allocate(4 + length - bodyLength);
 
+        //整个数据长度
         // length
         result.putInt(length);
 
+        //协议 占四个字节
         // header length
         result.put(markProtocolType(headerData.length, serializeTypeCurrentRPC));
 
+        //header
         // header data
         result.put(headerData);
 

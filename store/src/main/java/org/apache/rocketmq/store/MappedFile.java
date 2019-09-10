@@ -160,9 +160,13 @@ public class MappedFile extends ReferenceResource {
         ensureDirOK(this.file.getParent());
 
         try {
+            //fileChannel
             this.fileChannel = new RandomAccessFile(this.file, "rw").getChannel();
+            //磁盘文件的内存映射文件
             this.mappedByteBuffer = this.fileChannel.map(MapMode.READ_WRITE, 0, fileSize);
+            //大小累计
             TOTAL_MAPPED_VIRTUAL_MEMORY.addAndGet(fileSize);
+            //文件数目累计
             TOTAL_MAPPED_FILES.incrementAndGet();
             ok = true;
         } catch (FileNotFoundException e) {
@@ -201,7 +205,7 @@ public class MappedFile extends ReferenceResource {
     public AppendMessageResult appendMessagesInner(final MessageExt messageExt, final AppendMessageCallback cb) {
         assert messageExt != null;
         assert cb != null;
-
+        //写索引
         int currentPos = this.wrotePosition.get();
 
         if (currentPos < this.fileSize) {
@@ -219,6 +223,7 @@ public class MappedFile extends ReferenceResource {
             this.storeTimestamp = result.getStoreTimestamp();
             return result;
         }
+        //没有空间了
         log.error("MappedFile.appendMessage return null, wrotePosition: {} fileSize: {}", currentPos, this.fileSize);
         return new AppendMessageResult(AppendMessageStatus.UNKNOWN_ERROR);
     }
@@ -345,6 +350,7 @@ public class MappedFile extends ReferenceResource {
             return true;
         }
 
+        //如果有页数限制
         if (flushLeastPages > 0) {
             return ((write / OS_PAGE_SIZE) - (flush / OS_PAGE_SIZE)) >= flushLeastPages;
         }

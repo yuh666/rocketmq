@@ -106,7 +106,9 @@ public class HAService {
     // }
 
     public void start() throws Exception {
+        //监听accept
         this.acceptSocketService.beginAccept();
+        //处理读写事件
         this.acceptSocketService.start();
         this.groupTransferService.start();
         this.haClient.start();
@@ -430,6 +432,11 @@ public class HAService {
             return true;
         }
 
+        /**
+         *
+         * 将同步的数据追加到commitLog
+         * @return
+         */
         private boolean dispatchReadRequest() {
             final int msgHeaderSize = 8 + 4; // phyoffset + size
             int readSocketPos = this.byteBufferRead.position();
@@ -551,6 +558,7 @@ public class HAService {
                     if (this.connectMaster()) {
 
                         if (this.isTimeToReportOffset()) {
+                            //上报自己的当前同步的进度
                             boolean result = this.reportSlaveMaxOffset(this.currentReportedOffset);
                             if (!result) {
                                 this.closeMaster();

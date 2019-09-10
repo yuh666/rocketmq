@@ -854,6 +854,7 @@ public class BrokerController {
 
         if (!messageStoreConfig.isEnableDLegerCommitLog()) {
             startProcessorByHa(messageStoreConfig.getBrokerRole());
+            //同步元数据信息
             handleSlaveSynchronize(messageStoreConfig.getBrokerRole());
         }
 
@@ -1104,6 +1105,7 @@ public class BrokerController {
 
 
     private void handleSlaveSynchronize(BrokerRole role) {
+        //如果是slave
         if (role == BrokerRole.SLAVE) {
             if (null != slaveSyncFuture) {
                 slaveSyncFuture.cancel(false);
@@ -1119,6 +1121,7 @@ public class BrokerController {
                         log.error("ScheduledTask SlaveSynchronize syncAll error.", e);
                     }
                 }
+                //一分钟同步一次
             }, 1000 * 3, 1000 * 10, TimeUnit.MILLISECONDS);
         } else {
             //handle the slave synchronise
