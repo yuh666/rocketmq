@@ -58,11 +58,13 @@ public class Consumer {
          * Subscribe one more more topics to consume.
          */
         consumer.setNamesrvAddr("127.0.0.1:9876");
+        //将topic -> subData 保存
         consumer.subscribe("TopicTest", "*");
 
         /*
          *  Register callback to execute on arrival of messages fetched from brokers.
          */
+        //保存MessageListener
         consumer.registerMessageListener(new MessageListenerConcurrently() {
 
             @Override

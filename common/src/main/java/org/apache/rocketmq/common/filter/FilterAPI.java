@@ -42,6 +42,7 @@ public class FilterAPI {
         subscriptionData.setTopic(topic);
         subscriptionData.setSubString(subString);
 
+        //默认为全部 *
         if (null == subString || subString.equals(SubscriptionData.SUB_ALL) || subString.length() == 0) {
             subscriptionData.setSubString(SubscriptionData.SUB_ALL);
         } else {
@@ -51,6 +52,7 @@ public class FilterAPI {
                     if (tag.length() > 0) {
                         String trimString = tag.trim();
                         if (trimString.length() > 0) {
+                            //将Tag 放入TagSet
                             subscriptionData.getTagsSet().add(trimString);
                             subscriptionData.getCodeSet().add(trimString.hashCode());
                         }

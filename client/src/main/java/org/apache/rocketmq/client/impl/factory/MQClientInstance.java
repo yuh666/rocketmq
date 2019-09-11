@@ -561,12 +561,13 @@ public class MQClientInstance {
                                 if (id != MixAll.MASTER_ID)
                                     continue;
                             }
-
+                            //只向主节点发送心跳
                             try {
                                 int version = this.mQClientAPIImpl.sendHearbeat(addr, heartbeatData, 3000);
                                 if (!this.brokerVersionTable.containsKey(brokerName)) {
                                     this.brokerVersionTable.put(brokerName, new HashMap<String, Integer>(4));
                                 }
+                                //记录主节点版本
                                 this.brokerVersionTable.get(brokerName).put(addr, version);
                                 if (times % 20 == 0) {
                                     log.info("send heart beat to broker[{} {} {}] success", brokerName, id, addr);
